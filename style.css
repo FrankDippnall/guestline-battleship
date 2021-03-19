@@ -1,3 +1,8 @@
+:root{
+    --board-color:#7f92ff;
+
+}
+
 body{
     font-size: 22px;
     text-align: center;
@@ -9,21 +14,47 @@ body{
 
 #game-board{
     padding:15px;
-    background-color: #7f92ff;
+    background-color: var(--board-color);
     margin:15px auto 15px auto;
-    cursor :crosshair;
+
 }
 
 #game-board td{
     width:40px;
-    height:40px;
+    height:43px;
+    line-height:40px;
     background-color: #b3befc;
-    transition:background-color 0.3s;
     cursor :crosshair;
+    background-position: center;
+    border:1.5px solid var(--board-color);
+    padding:0;
+    margin:auto;
 }
-
 #game-board td:hover{
     background-color: #e2e6fd;
+}
+
+
+#game-board td.selected{
+    background-color: #ff822e;
+}
+#game-board td.selected:hover{
+    background-color: #ff822e;
+}
+#game-board td.column_selected{
+    background-color: #ffb685;
+}
+#game-board td.column_selected:hover{
+    background-color: #ffb685;
+}
+
+
+#game-board td.revealed{
+    background-color: #dfe4fc;
+    cursor :default;
+}
+#game-board td.revealed:hover{
+    background-color: #dfe4fc;
 }
 
 h2{
@@ -38,3 +69,51 @@ footer{
     text-align: center;
     width:100%;
 }
+
+input#target{
+    width:80px;
+    font-size: 30px;
+    line-height:30px;
+    font-family:"Consolas", 'Courier New', monospace;
+    padding:1px 5px 1px 5px;
+}
+
+
+table.options{
+    margin:auto;
+}
+
+table.options button{
+    font-family: "bahnschrift light", "sans serif";
+    height:30px;
+    font-size:20px;
+}
+
+table.options tr{
+    text-align: center;
+}
+
+
+
+td.miss{
+    background-image: url(img/miss.png);
+}
+td.ship-horizontal{
+    background-image: url(img/ship-horizontal.png);
+}
+td.ship-vertical{
+    background-image: url(img/ship-vertical.png);
+}
+td.ship-top{
+    background-image: url(img/ship-top.png);
+}
+td.ship-right{
+    background-image: url(img/ship-right.png);
+}
+td.ship-bottom{
+    background-image: url(img/ship-bottom.png);
+}
+td.ship-left{
+    background-image: url(img/ship-left.png);
+}
+

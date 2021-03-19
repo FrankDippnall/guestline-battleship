@@ -1,41 +1,39 @@
 
+//jQuery extension
+$.fn.exists = function () {
+    return this.length !== 0;
+}
+
+
+//constant globals
 const board = {
-    width: 4,
-    height: 4,
+    width: 10,
+    height: 10,
     ships: {
-        4: 1,
+        4: 2,
+        5: 1
     },
     data: null
 };
-
 const cell = {
     BLOCKED: -1,
     EMPTY: 0,
     SHIP_VERTICAL: 1,
     SHIP_HORIZONTAL: 2,
     SHIP_TOP: 3,
-    SHIP_BOTTOM: 4,
-    SHIP_LEFT: 5,
-    SHIP_RIGHT: 6,
+    SHIP_RIGHT: 4,
+    SHIP_BOTTOM: 5,
+    SHIP_LEFT: 6,
     get: function (value) {
         for (let key of Object.keys(this)) {
-            if (value = this[key]) return key;
+            if (value == this[key]) return key;
         }
     }
 }
 
-$(function () {
-    //run on page load.
-    generateBoard();
-});
+//runtime globals
+//...
 
-
-
-function generateBoard() {
-    generateEmptyBoard();
-    spawnShips();
-    console.log(formatBoard(board.data));
-}
 
 function generateEmptyBoard() {
     let data = [];
@@ -44,7 +42,7 @@ function generateEmptyBoard() {
         let row_data = [];
         html += `<tr>`
         for (let x = 0; x < board.width; x++) {
-            html += `<td id="${String.fromCharCode((x) + 65)}-${board.height - y}" class="empty"></td>`
+            html += `<td id="${String.fromCharCode((x) + 65)}-${board.height - y}" class="unknown"></td>`
             row_data.push(cell.EMPTY);
         }
         html += `</tr>`
@@ -68,6 +66,8 @@ function spawnShips() {
 
 let last_start_pos;
 let last_cell_number;
+
+let last_empty_array;
 
 function spawnShip(ship_size) {
     let start_pos;
@@ -119,13 +119,13 @@ function spawnShip(ship_size) {
             switch (direction) {
                 case "up":
                     //end piece (bottom)
-                    board.data[start_pos.y][start_pos.x] = cell.SHIP_BOTTOM;
+                    board.data[start_pos.y][start_pos.x] = cell.SHIP_TOP;
                     for (let i = 1; i < ship_size - 1; i++) {
                         //middle pieces (vertical)
                         board.data[start_pos.y + i][start_pos.x] = cell.SHIP_VERTICAL;
                     }
                     //end piece (top)
-                    board.data[start_pos.y + (ship_size - 1)][start_pos.x] = cell.SHIP_TOP;
+                    board.data[start_pos.y + (ship_size - 1)][start_pos.x] = cell.SHIP_BOTTOM;
                     break;
                 case "right":
                     //end piece (left)
@@ -186,11 +186,14 @@ function randomEmptyCell() {
                 empty_array[y].push(empty_num++);
                 empty_total++;
             }
-            else empty_array[y].push(0);
+            else empty_array[y].push(-1);
         }
         //add count to each row.
         empty_array[y].unshift(empty_num);
     }
+
+    last_empty_array = empty_array;
+    console.log(empty_array);
 
     if (empty_total == 0) return null;
     //get random cell number
@@ -215,11 +218,168 @@ function randomEmptyCell() {
     };
 }
 
+function generateBoard() {
+    generateEmptyBoard();
+    spawnShips();
 
-function formatBoard(data) {
-    let output = [];
-    for (let y = data.length - 1; y >= 0; y--) {
-        output.push(data[y])
+    console.log(formatBoard(board.data));
+
+    if ($("#reveal-board").prop("checked")) revealAllCells();
+}
+
+function revealCell(coords) {
+
+    //get index values
+    let x = coords.split("-")[0].charCodeAt(0) - 65;
+    let y = board.height - coords.split("-")[1];
+
+    let cellType = board.data[y][x];
+
+
+    let cellElem = $("#" + coords)
+    switch (cellType) {
+        case cell.EMPTY: case cell.BLOCKED:
+            cellElem.addClass("miss");
+            break;
+        case cell.SHIP_VERTICAL:
+            cellElem.addClass("ship-vertical");
+            break;
+        case cell.SHIP_HORIZONTAL:
+            cellElem.addClass("ship-horizontal");
+            break;
+        case cell.SHIP_TOP:
+            cellElem.addClass("ship-top");
+            break;
+        case cell.SHIP_RIGHT:
+            cellElem.addClass("ship-right");
+            break;
+        case cell.SHIP_BOTTOM:
+            cellElem.addClass("ship-bottom");
+            break;
+        case cell.SHIP_LEFT:
+            cellElem.addClass("ship-left");
+            break;
+        default:
+            console.error("cell contains invalid value: " + coords);
     }
-    return output;
+    cellElem.addClass("revealed");
+    cellElem.removeClass("unknown");
+}
+
+function fire() {
+    let coords = $("input#target").val();
+    if ($("#" + coords).exists()) {
+
+    }
+    else {
+        console.warn("Cell with coordinates " + coords + " does not exist.");
+    }
+
+}
+
+
+
+
+$(function () {
+    //run on page load.
+    generateBoard();
+
+    $("button#fire").prop("disabled", true);
+    $("input#target").on("keypress", formatInput);
+    $("input#target").on("input", updateFireButton);
+
+    $("#game-board td").click(function () {
+        let coords = $(this).attr("id")
+        selectCell(coords);
+        $("input#target").val(coords);
+        updateFireButton();
+
+        whatis(coords)
+    });
+
+    $("button#fire").click(fire);
+
+    $("#new-board").click(generateBoard);
+});
+
+function formatInput(e) {
+    e.preventDefault();
+
+    console.log(e.charCode, e);
+
+    let input = String.fromCharCode(e.charCode).toUpperCase();
+    let code = input.charCodeAt(0);
+
+    let current = $(e.target).val();
+    //if valid letter
+    if (code >= 65 /*A*/ && code <= (65 + board.width - 1)) {
+        $(e.target).val(input + "-")
+    }
+    else if (current.length < 4 && (
+        (code >= 49 /*1*/ && code <= 57 /*9*/) ||
+        (code == 48 /*0*/ && current.length >= 3))) {
+        $(e.target).val(current + input)
+    }
+    updateFireButton();
+}
+
+
+
+
+function updateSelectedCell() {
+    let coords = $("input#target").val();
+    if (coords.length > 0) {
+        if ($("#" + coords).exists()) {
+            selectCell(coords);
+            return true;
+        }
+        else if (coords.length == 2) {
+            selectColumn(coords)
+        }
+        else {
+            selectCell();
+            return false;
+        }
+    }
+}
+
+
+
+function updateFireButton() {
+    if (updateSelectedCell() && $("input#target").val().length >= 3)
+        $("button#fire").prop("disabled", false);
+    else
+        $("button#fire").prop("disabled", true);
+}
+function selectCell(coords) {
+    $("#game-board td").removeClass("selected");
+    $("#game-board td").removeClass("column_selected");
+    if (coords) $("#" + coords).addClass("selected");
+}
+function selectColumn(col) {
+    $("#game-board td").removeClass("selected");
+    $("#game-board td").removeClass("column_selected");
+    if (col) $("td[id*='" + col + "']").addClass("column_selected");
+}
+
+
+
+
+//debug functions
+function formatBoard(data) {
+
+    return data;
+}
+
+function revealAllCells() {
+    $("#game-board td").each(function () {
+        revealCell($(this).attr("id"));
+    });
+}
+
+function whatis(id) {
+    let x = id.split("-")[0].charCodeAt(0) - 65;
+    let y = board.height - id.split("-")[1];
+
+    console.log(id, x, y, board.data[y][x], `board.data[${y}][${x}]`);
 }

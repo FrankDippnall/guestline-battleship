@@ -1,5 +1,5 @@
 <!doctype=html>
-    <html>
+    <html lang="en-us" charset="UTF-8">
 
     <head>
         <link rel="stylesheet" href="style.css">
@@ -12,12 +12,36 @@
         <h1>Battleships</h1>
         <h2>By Frank Dippnall</h2>
 
-        <table id="game-board">
+        <table id="game-board" cellspacing="0">
 
         </table>
 
+
+        <table class="options">
+            <tr>
+                <td><input id="target" maxlength="3" type="text"></td>
+                <td><button id="fire">Fire!</button></td>
+            </tr>
+        </table>
+
+
+        <br>
+        <table class="options">
+            <tr>
+                <td><button id="new-board">Generate new board</button></td>
+            </tr>
+            <tr>
+                <td>Reveal board?<input id="reveal-board" type="checkbox"></td>
+            </tr>
+
+        </table>
+
+
+        <br><br>
+
+
         <footer>
-            &copy; Frank Dippnall, 2021. All rights reserved. Last modified on 16/03/2021.
+            &copy; Frank Dippnall, 2021. All rights reserved. Last modified on 19/03/2021.
             <!--TODO update-->
         </footer>
     </body>
