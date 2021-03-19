@@ -50,7 +50,6 @@ function generateEmptyBoard() {
     }
     board.data = data;
     $("#game-board").html(html);
-    console.log(data);
 }
 
 function spawnShips() {
@@ -74,7 +73,6 @@ function spawnShip(ship_size) {
 
     while ((start_pos = randomEmptyCell()) != null) {
         last_start_pos = start_pos;
-        console.log("checking ", start_pos);
         //check if blocked
         let valid = new Set(["up", "right", "down", "left"])
 
@@ -193,7 +191,6 @@ function randomEmptyCell() {
     }
 
     last_empty_array = empty_array;
-    console.log(empty_array);
 
     if (empty_total == 0) return null;
     //get random cell number
@@ -208,7 +205,6 @@ function randomEmptyCell() {
             //cell is in the row
             for (let x = 0; x < empty_array[y].length; x++) {
                 if (empty_count - empty_array[y][0] + empty_array[y][x + 1] == cell_number) {
-                    console.log(cell_number, x, y);
                     return { x: x, y: parseInt(y) }
                 }
             }
@@ -219,10 +215,9 @@ function randomEmptyCell() {
 }
 
 function generateBoard() {
-    generateEmptyBoard();
+
     spawnShips();
 
-    console.log(formatBoard(board.data));
 
     if ($("#reveal-board").prop("checked")) revealAllCells();
 }
@@ -269,7 +264,7 @@ function revealCell(coords) {
 function fire() {
     let coords = $("input#target").val();
     if ($("#" + coords).exists()) {
-
+        console.log("fire!");
     }
     else {
         console.warn("Cell with coordinates " + coords + " does not exist.");
@@ -280,15 +275,33 @@ function fire() {
 
 
 
+
 $(function () {
-    //run on page load.
+    createGame();
+});
+
+function createGame() {
+    let startTime = new Date().getTime();
+    cleanUp();
     generateBoard();
+    addEventHandlers();
+    console.log("Game created in " + ((new Date().getTime() - startTime) / 1000) + "s");
+}
 
-    $("button#fire").prop("disabled", true);
-    $("input#target").on("keypress", formatInput);
-    $("input#target").on("input", updateFireButton);
+function cleanUp() {
+    $("#game-board td.unknown").off("click")
+    $("input#target").off("keypress");
+    $("input#target").off("keydown");
+    $("button#fire").off("click");
+    $("input#target").off("input");
+    $("#new-board").off("click");
+    generateEmptyBoard();
+}
 
-    $("#game-board td").click(function () {
+function addEventHandlers() {
+
+
+    $("#game-board td.unknown").click(function () {
         let coords = $(this).attr("id")
         selectCell(coords);
         $("input#target").val(coords);
@@ -297,30 +310,56 @@ $(function () {
         whatis(coords)
     });
 
+
+    $("button#fire").prop("disabled", true);
+
+    $("input#target").on("keydown", formatInput);
+
+    $("input#target").on("input", updateFireButton);
+
+
+    $("input#target").on("keypress", function (e) { e.preventDefault() });
+
     $("button#fire").click(fire);
 
-    $("#new-board").click(generateBoard);
-});
+
+
+    $("#new-board").click(createGame);
+}
 
 function formatInput(e) {
     e.preventDefault();
 
-    console.log(e.charCode, e);
+    console.log(e.keyCode, e);
 
-    let input = String.fromCharCode(e.charCode).toUpperCase();
+    let input = String.fromCharCode(e.keyCode).toUpperCase();
     let code = input.charCodeAt(0);
 
     let current = $(e.target).val();
-    //if valid letter
-    if (code >= 65 /*A*/ && code <= (65 + board.width - 1)) {
-        $(e.target).val(input + "-")
+
+    if (code == 8) {
+        //backspace
+        $(e.target).val(current.substr(0, current.length - 1));
     }
-    else if (current.length < 4 && (
-        (code >= 49 /*1*/ && code <= 57 /*9*/) ||
-        (code == 48 /*0*/ && current.length >= 3))) {
-        $(e.target).val(current + input)
+    else if (code == 13) {
+        //enter
+        fire();
+        return;
+    }
+    else {
+
+        //if valid letter
+        if (code >= 65 /*A*/ && code <= (65 + board.width - 1)) {
+            $(e.target).val(input + "-")
+        }
+        else if (current.length < 4 && (
+            (code >= 49 /*1*/ && code <= 57 /*9*/) ||
+            (code == 48 /*0*/ && current.length >= 3))) {
+            $(e.target).val(current + input)
+        }
     }
     updateFireButton();
+
 }
 
 
