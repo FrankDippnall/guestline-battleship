@@ -1,0 +1,40 @@
+body{
+    font-size: 22px;
+    text-align: center;
+    overflow-x: hidden;
+    margin: 0;
+    padding-top: 10px;
+    font-family: "bahnschrift light", "sans serif";
+}
+
+#game-board{
+    padding:15px;
+    background-color: #7f92ff;
+    margin:15px auto 15px auto;
+    cursor :crosshair;
+}
+
+#game-board td{
+    width:40px;
+    height:40px;
+    background-color: #b3befc;
+    transition:background-color 0.3s;
+    cursor :crosshair;
+}
+
+#game-board td:hover{
+    background-color: #e2e6fd;
+}
+
+h2{
+    font-size:25px;
+    margin-top:-15px;
+
+}
+
+footer{
+    position:fixed;
+    bottom:5px;
+    text-align: center;
+    width:100%;
+}
