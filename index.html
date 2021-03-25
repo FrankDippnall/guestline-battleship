@@ -12,9 +12,35 @@
         <h1>Battleships</h1>
         <h2>By Frank Dippnall</h2>
 
+
+        <div id="game_log">
+            <table class="display">
+                <tr id="shots_text">
+                    <th class="label left_side">Shots: </th>
+                    <td id="shots">0</td>
+
+
+                    <th class="label left_side">Hits: </th>
+                    <td id="hits">0</td>
+
+                    <th class="label left_side">Ships Sunk: </th>
+                    <td id="sunk">0/0</td>
+                </tr>
+            </table>
+        </div>
         <table id="game_board" cellspacing="0">
 
         </table>
+
+        <div id="win_screen">
+            <h1>Game Over</h1>
+            <p>
+                All ships have been sunk. Congratulations!
+            </p>
+            <button id="hide_screen" class="outside">Dismiss</button>
+        </div>
+
+
 
 
         <table class="options">
@@ -25,16 +51,19 @@
         </table>
 
 
-        <br>
+
         <table class="options">
             <tr>
                 <td colspan="5"><button id="new_board">Generate new board</button></td>
             </tr>
+            <tr id="show_advanced_row">
+                <td colspan="5"><button id="show_advanced">Show advanced options</button></td>
+            </tr>
 
-            <tr>
+            <tr class="advanced">
                 <th colspan="5">Board Size</th>
             </tr>
-            <tr>
+            <tr class="advanced">
                 <td class="label left_side">(Width)</td>
                 <td><input type="number" id="board_width" max="26" min="5"></td>
                 <td class="label middle">X</td>
@@ -44,37 +73,37 @@
 
 
 
-            <tr>
+            <tr class="advanced">
                 <th colspan="5">Ships</th>
             </tr>
-            <tr>
+            <tr class="advanced">
                 <td class="label left_side">Size 2</td>
-                <td class="right_side"><input type="number" id="ship_size_2"></td>
+                <td class="right_side"><input type="number" id="ship_size_2" max="10" min="0"></td>
                 <td></td>
                 <td class="label left_side">Size 3</td>
-                <td class="right_side"><input type="number" id="ship_size_3"></td>
+                <td class="right_side"><input type="number" id="ship_size_3" max="10" min="0"></td>
             </tr>
-            <tr>
+            <tr class="advanced">
                 <td class="label left_side">Size 4</td>
-                <td class="right_side"><input type="number" id="ship_size_4"></td>
+                <td class="right_side"><input type="number" id="ship_size_4" max="10" min="0"></td>
                 <td></td>
                 <td class="label left_side">Size 5</td>
-                <td class="right_side"><input type="number" id="ship_size_5"></td>
+                <td class="right_side"><input type="number" id="ship_size_5" max="10" min="0"></td>
             </tr>
-            <tr>
+            <tr class="advanced">
                 <td class="label left_side">Size 6</td>
-                <td class="right_side"><input type="number" id="ship_size_6"></td>
+                <td class="right_side"><input type="number" id="ship_size_6" max="10" min="0"></td>
                 <td></td>
                 <td class="label left_side">Size 7</td>
-                <td class="right_side"><input type="number" id="ship_size_7"></td>
+                <td class="right_side"><input type="number" id="ship_size_7" max="10" min="0"></td>
             </tr>
 
 
-            <tr>
+            <tr class="advanced">
                 <td colspan="5">Reveal board?<input id="reveal_board" type="checkbox"></td>
             </tr>
 
-            <tr>
+            <tr class="advanced">
                 <td colspan="5"><button class="small_button" id="reset_default">Reset to default options</button></td>
             </tr>
 

@@ -9,7 +9,7 @@ body{
     overflow-x: hidden;
     margin: 0;
     padding-top: 10px;
-    font-family: "bahnschrift light", "sans serif";
+    font-family: "bahnschrift light","Calibri", "sans serif";
 }
 
 #game_board{
@@ -65,12 +65,8 @@ h2{
     margin-top:-30px;
 }
 
-footer{
-    position:fixed;
-    bottom:5px;
-    text-align: center;
-    width:100%;
-}
+
+
 
 input#target{
     width:80px;
@@ -81,29 +77,35 @@ input#target{
 }
 
 
-table.options{
+table.options, table.display{
     margin:auto;
     text-align: center;
+}
+#game_log table{
+    font-size:25px;
+}
+#game_log th{
+    padding-left:10px;
 }
 
 input[type="number"]{
     width:50px;
 }
 
-th.left_side td.left_side{
+th.left_side, td.left_side{
     text-align: right;
 }
-th.right_side td.right_side{
+th.right_side, td.right_side{
     text-align: left;
 }
-th.middle td.middle{
+th.middle, td.middle{
     text-align: center;
 }
 th.label{
     width:0;
 }
 
-table.options button{
+table.options button, button.outside{
     font-family: "bahnschrift light", "sans serif";
     height:30px;
     font-size:20px;
@@ -144,4 +146,25 @@ td.ship_left{
 
 button.small_button{
     font-size: small;
+}
+
+#win_screen{
+    width:100%;
+
+    background-color: #a3a3a3;
+    position:fixed;
+    top:300px;
+
+    padding:60px 0 60px 0;
+}
+
+footer{
+    position:fixed;
+    bottom:0px;
+    left:0;
+    text-align: center;
+    width:100%;
+    margin:0;
+    background-color: #7aaefc;
+    border-top:1px solid #d3d3d3
 }

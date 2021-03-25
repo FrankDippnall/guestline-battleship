@@ -38,12 +38,46 @@ const board_default = {
 //runtime globals
 var board;
 
+var shots;
+var hits;
+var ships;
+
 
 
 $(function () {
+    $("button#fire").prop("disabled", true);
+    $("input#target").on("keydown", formatInput);
+    $("body").on("keydown", function (e) { if (e.keyCode == 13) fire() });
+    $("input#target").on("input", updateFireButton);
+    $("input#target").on("keypress", function (e) { e.preventDefault() });
+    $("button#fire").click(fire);
+    $("#new_board").click(createGame);
+    $("#new_game").click(createGame)
+    $("#reset_default").click(resetDefaultOptions);
+    $("#show_advanced").click(toggleAdvanced);
+
+    $(".advanced").hide();
+    $("#win_screen").hide();
+
+
     resetDefaultOptions();
     createGame();
 });
+
+var show_advanced_options = false;
+function toggleAdvanced() {
+    show_advanced_options = !show_advanced_options;
+    if (show_advanced_options) {
+        $(".advanced").show()
+        $("#show_advanced").text("Hide advanced options");
+    }
+    else {
+        $(".advanced").hide()
+        $("#show_advanced").text("Show advanced options");
+    }
+}
+
+
 
 function resetDefaultOptions() {
     board = board_default;
@@ -68,25 +102,40 @@ function updateOptions() {
     board.ships[7] = $("#ship_size_7").val();
 }
 
+function updateLog() {
+    $("#shots").text(shots);
+    $("#hits").text(hits);
+}
+function initLog() {
+    $("#shots").text(0);
+    $("#hits").text(0);
+    $("#sunk").text("0/" + ships.length);
+}
+
 var game_start_time;
 
 function createGame() {
     let startTime = new Date().getTime();
+    $("#win_screen").hide();
+
+    shots = 0;
+    hits = 0;
+    ships = [];
+
+
     updateOptions();
     cleanUp();
     generateBoard();
     addEventHandlers();
+    initLog();
+
+
     console.log("Game created in " + ((new Date().getTime() - startTime) / 1000) + "s");
     game_start_time = new Date().getTime();
 }
 
 function cleanUp() {
     $("#game_board td.unknown").off("click")
-    $("input#target").off("keypress");
-    $("input#target").off("keydown");
-    $("button#fire").off("click");
-    $("input#target").off("input");
-    $("#new_board").off("click");
     generateEmptyBoard();
 }
 
@@ -101,22 +150,6 @@ function addEventHandlers() {
 
         //whatis(coords)
     });
-
-
-    $("button#fire").prop("disabled", true);
-
-    $("input#target").on("keydown", formatInput);
-
-    $("input#target").on("input", updateFireButton);
-
-
-    $("input#target").on("keypress", function (e) { e.preventDefault() });
-
-    $("button#fire").click(fire);
-
-
-
-    $("#new_board").click(createGame);
 }
 
 
@@ -136,13 +169,12 @@ function formatInput(e) {
     }
     else if (code == 13) {
         //enter
-        fire();
         return;
     }
     else {
 
         //if valid letter
-        if (code >= 65 /*A*/ && code <= (65 + board.width - 1)) {
+        if (code >= 65 /*A*/ && code <= (65 + parseInt(board.width) - 1)) {
             $(e.target).val(input + "-")
         }
         else if (current.length < 4 && (
@@ -227,7 +259,7 @@ function spawnShips() {
         //for the number of ships specified,
         for (let s = 0; s < board.ships[ship_size]; s++) {
             //spawn a ship
-            spawnShip(ship_size);
+            ships.push(spawnShip(ship_size));
         }
     }
 }
@@ -244,9 +276,6 @@ function spawnShip(ship_size) {
         last_start_pos = start_pos;
         //check if blocked
         let valid = new Set(["up", "right", "down", "left"])
-
-
-
 
         for (let i = 1; i < ship_size; i++) {
             if (valid.has("up")) {
@@ -281,52 +310,70 @@ function spawnShip(ship_size) {
             let options = Array.from(valid)
             let direction = options[Math.floor(Math.random() * options.length)];
 
+            let cells_array = [];
 
 
             switch (direction) {
                 case "up":
                     //end piece (bottom)
                     board.data[start_pos.y][start_pos.x] = cell.SHIP_TOP;
+                    cells_array.push(toCoords(start_pos.x, start_pos.y));
                     for (let i = 1; i < ship_size - 1; i++) {
                         //middle pieces
                         board.data[start_pos.y + i][start_pos.x] = cell.SHIP_BODY;
+                        cells_array.push(toCoords(start_pos.x, start_pos.y + i));
                     }
                     //end piece (top)
                     board.data[start_pos.y + (ship_size - 1)][start_pos.x] = cell.SHIP_BOTTOM;
+                    cells_array.push(toCoords(start_pos.x, start_pos.y + (ship_size - 1)));
                     break;
                 case "right":
                     //end piece (left)
                     board.data[start_pos.y][start_pos.x] = cell.SHIP_LEFT;
+                    cells_array.push(toCoords(start_pos.x, start_pos.y));
                     for (let i = 1; i < ship_size - 1; i++) {
                         //middle pieces
                         board.data[start_pos.y][start_pos.x + i] = cell.SHIP_BODY;
+                        cells_array.push(toCoords(start_pos.x + i, start_pos.y));
                     }
                     //end piece (right)
                     board.data[start_pos.y][start_pos.x + (ship_size - 1)] = cell.SHIP_RIGHT;
+                    cells_array.push(toCoords(start_pos.x + (ship_size - 1), start_pos.y));
                     break;
                 case "down":
                     //end piece (top)
                     board.data[start_pos.y][start_pos.x] = cell.SHIP_BOTTOM;
+                    cells_array.push(toCoords(start_pos.x, start_pos.y));
                     for (let i = 1; i < ship_size - 1; i++) {
                         //middle pieces
                         board.data[start_pos.y - i][start_pos.x] = cell.SHIP_BODY;
+                        cells_array.push(toCoords(start_pos.x, start_pos.y - i));
                     }
                     //end piece (bottom)
                     board.data[start_pos.y - (ship_size - 1)][start_pos.x] = cell.SHIP_TOP;
+                    cells_array.push(toCoords(start_pos.x, start_pos.y - (ship_size - 1)));
                     break;
                 case "left":
                     //end piece (right)
                     board.data[start_pos.y][start_pos.x] = cell.SHIP_RIGHT;
+                    cells_array.push(toCoords(start_pos.x, start_pos.y));
                     for (let i = 1; i < ship_size - 1; i++) {
                         //middle pieces
                         board.data[start_pos.y][start_pos.x - i] = cell.SHIP_BODY;
+                        cells_array.push(toCoords(start_pos.x - i, start_pos.y));
                     }
                     //end piece (left)
                     board.data[start_pos.y][start_pos.x - (ship_size - 1)] = cell.SHIP_LEFT;
+                    cells_array.push(toCoords(start_pos.x - (ship_size - 1), start_pos.y));
                     break;
             }
 
-            break;
+            //return ship details
+            return {
+                pos: start_pos,
+                size: ship_size,
+                cells: cells_array
+            }
         }
 
 
@@ -392,7 +439,7 @@ function generateBoard() {
 function revealCell(coords) {
 
     //get index values
-    let i = translateToArrayIndex(coords);
+    let i = toArrayIndex(coords);
 
     let cellType = board.data[i.y][i.x];
     let cellElem = $("#" + coords)
@@ -430,23 +477,62 @@ function revealCell(coords) {
 
 function fire() {
     let coords = $("input#target").val();
-    if ($("#" + coords).exists()) {
-        //fire at selected cell.
-        let result = revealCell(coords);
+    if (coords && coords.length >= 3) {
+        if ($("#" + coords).exists()) {
+            //fire at selected cell.
+            let result = revealCell(coords);
 
+            if (!result.repeat) {
+                shots++;
+                if (result.hit) {
+                    hits++;
+                    //check if sunk
+                    $("#sunk").text(sunkShips());
+
+                }
+            }
+
+            updateLog();
+        }
+        else {
+            console.warn("Cell with coordinates " + coords + " does not exist.");
+        }
     }
-    else {
-        console.warn("Cell with coordinates " + coords + " does not exist.");
-    }
+
 
 }
 
+function sunkShips() {
+    let number_sunk = 0;
+    for (let s in ships) {
+        let ship = ships[s];
+        let sunk_ship = true;
+        for (let c in ship.cells) {
+            if ($("#" + ship.cells[c]).hasClass("unknown")) {
+                //ship cell NOT hit
+                sunk_ship = false;
+            }
+        }
+        if (sunk_ship) number_sunk++;
+    }
+    if (number_sunk == ships.length) {
+        $("#win_screen").fadeIn();
+    }
+    return `${number_sunk}/${ships.length}`;
+}
 
-function translateToArrayIndex(coords) {
+
+function toArrayIndex(coords) {
     let x = coords.split("-")[0].charCodeAt(0) - 65;
     let y = board.height - coords.split("-")[1];
     return { x, y };
 }
+function toCoords(x, y) {
+    let c = String.fromCharCode(x + 65)
+    let r = board.height - y;
+    return c + "-" + r;
+}
+
 
 
 
@@ -465,6 +551,6 @@ function revealAllCells() {
 }
 
 function whatis(id) {
-    let i = translateToArrayIndex(id);
+    let i = toArrayIndex(id);
     console.log(id, x, y, board.data[i.y][i.x], `board.data[${i.y}][${i.x}]`);
 }
