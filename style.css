@@ -12,14 +12,14 @@ body{
     font-family: "bahnschrift light", "sans serif";
 }
 
-#game-board{
-    padding:15px;
+#game_board{
+    padding:15px 15px 0px 4px;
     background-color: var(--board-color);
     margin:15px auto 15px auto;
 
 }
 
-#game-board td{
+#game_board td{
     width:40px;
     height:43px;
     line-height:40px;
@@ -30,37 +30,39 @@ body{
     padding:0;
     margin:auto;
 }
-#game-board td:hover{
+#game_board td:hover{
     background-color: #e2e6fd;
 }
 
 
-#game-board td.selected{
+#game_board td.selected{
     background-color: #ff822e;
 }
-#game-board td.selected:hover{
+#game_board td.selected:hover{
     background-color: #ff822e;
 }
-#game-board td.column_selected{
+#game_board td.column_selected{
     background-color: #ffb685;
 }
-#game-board td.column_selected:hover{
+#game_board td.column_selected:hover{
     background-color: #ffb685;
 }
 
 
-#game-board td.revealed{
+#game_board td.revealed{
     background-color: #dfe4fc;
     cursor :default;
 }
-#game-board td.revealed:hover{
+#game_board td.revealed:hover{
     background-color: #dfe4fc;
 }
 
+h1{
+    font-size: 35px;
+}
 h2{
-    font-size:25px;
-    margin-top:-15px;
-
+    font-size:20px;
+    margin-top:-30px;
 }
 
 footer{
@@ -81,6 +83,24 @@ input#target{
 
 table.options{
     margin:auto;
+    text-align: center;
+}
+
+input[type="number"]{
+    width:50px;
+}
+
+th.left_side td.left_side{
+    text-align: right;
+}
+th.right_side td.right_side{
+    text-align: left;
+}
+th.middle td.middle{
+    text-align: center;
+}
+th.label{
+    width:0;
 }
 
 table.options button{
@@ -93,27 +113,35 @@ table.options tr{
     text-align: center;
 }
 
+th.key{
+    color:#0c026f;
+    height:0px;
+    width:0px;
+}
+
+
 
 
 td.miss{
     background-image: url(img/miss.png);
 }
-td.ship-horizontal{
-    background-image: url(img/ship-horizontal.png);
+td.ship_body{
+    background-image: url(img/ship-body.png);
 }
-td.ship-vertical{
-    background-image: url(img/ship-vertical.png);
-}
-td.ship-top{
+td.ship_top{
     background-image: url(img/ship-top.png);
 }
-td.ship-right{
+td.ship_right{
     background-image: url(img/ship-right.png);
 }
-td.ship-bottom{
+td.ship_bottom{
     background-image: url(img/ship-bottom.png);
 }
-td.ship-left{
+td.ship_left{
     background-image: url(img/ship-left.png);
 }
 
+
+button.small_button{
+    font-size: small;
+}

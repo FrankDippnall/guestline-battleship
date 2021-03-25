@@ -12,7 +12,7 @@
         <h1>Battleships</h1>
         <h2>By Frank Dippnall</h2>
 
-        <table id="game-board" cellspacing="0">
+        <table id="game_board" cellspacing="0">
 
         </table>
 
@@ -28,10 +28,54 @@
         <br>
         <table class="options">
             <tr>
-                <td><button id="new-board">Generate new board</button></td>
+                <td colspan="5"><button id="new_board">Generate new board</button></td>
+            </tr>
+
+            <tr>
+                <th colspan="5">Board Size</th>
             </tr>
             <tr>
-                <td>Reveal board?<input id="reveal-board" type="checkbox"></td>
+                <td class="label left_side">(Width)</td>
+                <td><input type="number" id="board_width" max="26" min="5"></td>
+                <td class="label middle">X</td>
+                <td><input type="number" id="board_height" max="20" min="5"></td>
+                <td class="label right_side">(Height)</td>
+            </tr>
+
+
+
+            <tr>
+                <th colspan="5">Ships</th>
+            </tr>
+            <tr>
+                <td class="label left_side">Size 2</td>
+                <td class="right_side"><input type="number" id="ship_size_2"></td>
+                <td></td>
+                <td class="label left_side">Size 3</td>
+                <td class="right_side"><input type="number" id="ship_size_3"></td>
+            </tr>
+            <tr>
+                <td class="label left_side">Size 4</td>
+                <td class="right_side"><input type="number" id="ship_size_4"></td>
+                <td></td>
+                <td class="label left_side">Size 5</td>
+                <td class="right_side"><input type="number" id="ship_size_5"></td>
+            </tr>
+            <tr>
+                <td class="label left_side">Size 6</td>
+                <td class="right_side"><input type="number" id="ship_size_6"></td>
+                <td></td>
+                <td class="label left_side">Size 7</td>
+                <td class="right_side"><input type="number" id="ship_size_7"></td>
+            </tr>
+
+
+            <tr>
+                <td colspan="5">Reveal board?<input id="reveal_board" type="checkbox"></td>
+            </tr>
+
+            <tr>
+                <td colspan="5"><button class="small_button" id="reset_default">Reset to default options</button></td>
             </tr>
 
         </table>
@@ -41,7 +85,7 @@
 
 
         <footer>
-            &copy; Frank Dippnall, 2021. All rights reserved. Last modified on 19/03/2021.
+            &copy; Frank Dippnall, 2021. All rights reserved. Last modified on 25/03/2021.
             <!--TODO update-->
         </footer>
     </body>
