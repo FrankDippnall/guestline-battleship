@@ -1,0 +1,13 @@
+{
+    "compilerOptions": {
+        "lib": [
+            "ES2019",
+            "DOM"
+        ],
+        "removeComments": true,
+        "outFile": "battleship-compiled.js"
+    },
+    "files": [
+        "battleship.ts",
+    ]
+}
