@@ -1,0 +1,24 @@
+{
+  "name": "guestline-battleship",
+  "version": "1.0.0",
+  "description": "A TypeScript implementation of Battleships in a browser.",
+  "main": "battleship-compiled.js",
+  "dependencies": {
+    "@types/jquery": "^3.5.5",
+    "typescript": "^4.2.3"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/FrankDippnall/guestline-battleship.git"
+  },
+  "author": "Francis Dippnall",
+  "license": "SEE LICENSE IN LICENSE",
+  "bugs": {
+    "url": "https://github.com/FrankDippnall/guestline-battleship/issues"
+  },
+  "homepage": "https://github.com/FrankDippnall/guestline-battleship#readme"
+}
